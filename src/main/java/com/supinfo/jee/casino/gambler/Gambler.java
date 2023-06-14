@@ -21,11 +21,16 @@ public class Gambler {
     @Id
     @GeneratedValue
     private Long id;
+
     private String pseudo;
+
     @NotEmpty
     private String password;
+
     private long balance;
+
     private int bet;
+
     @ToString.Exclude
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "gambler")
     private List<Party> partyList = new ArrayList<>();
@@ -36,6 +41,4 @@ public class Gambler {
         this.balance = balanceParam;
         this.bet = betParam;
     }
-    
-
 }

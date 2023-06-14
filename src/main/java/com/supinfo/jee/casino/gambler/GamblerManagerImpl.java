@@ -13,7 +13,6 @@ public class GamblerManagerImpl implements GamblerManager {
 
     private final GamblerRepository gamblerRepository;
 
-
     @Override
     public Gambler getGambler(String pseudo) {
         final Gambler gambler;
@@ -25,7 +24,6 @@ public class GamblerManagerImpl implements GamblerManager {
         } else {
             throw new EmptyPseudoException();
         }
-
         return gambler;
     }
 
@@ -33,7 +31,6 @@ public class GamblerManagerImpl implements GamblerManager {
     public void authenticateGambler(String pseudo, String password) {
         if (StringUtils.hasText(pseudo)) {
             Gambler gambler = this.retrieveGambler(pseudo).orElseThrow(EmptyPseudoException::new);
-
             if (!password.startsWith("{bcryp}") && !gambler.getPassword().equals(password)) {
                 throw new WrongPasswordException();
             }
@@ -81,16 +78,12 @@ public class GamblerManagerImpl implements GamblerManager {
             throw new WrongBetException();
         }
         Gambler gambler = this.retrieveGambler(pseudo).orElseThrow(EmptyPseudoException::new);
-
         long newBalance = gambler.getBalance() - (long) bet * numberOfLaunch;
         gambler.setBalance(newBalance);
         gambler = this.gamblerRepository.save(gambler);
-
         if (newBalance < 1) {
             throw new WrongBalanceException(newBalance, pseudo);
         }
         return gambler;
     }
-
-
 }
