@@ -71,6 +71,15 @@ betInput.addEventListener('blur', function() {
   }
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+  var betInput = document.getElementById("bet-input");
+  betInput.value = 1;
+
+  if (betInput.value === "") {
+    betInput.value = "1";
+  }
+  updateSliderValue();
+});
 
 slider.addEventListener("input", function() {
   var payout = (100 / slider.value).toFixed(2);
