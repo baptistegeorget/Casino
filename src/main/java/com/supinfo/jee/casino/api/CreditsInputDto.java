@@ -7,13 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class LaunchInputDto {
-
+public class CreditsInputDto {
     private String pseudo;
-
-    private int initialValue;
-
-    private int bet;
-
-    private int numberOfLaunch;
+    private int amount;
 }

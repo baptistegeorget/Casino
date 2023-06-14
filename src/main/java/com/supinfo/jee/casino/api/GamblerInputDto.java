@@ -1,17 +1,13 @@
 package com.supinfo.jee.casino.api;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class LaunchOutputDto {
-
+@Setter
+@Getter
+public class GamblerInputDto {
+    private String password;
     private String pseudo;
-
-    private long newBalance;
 }

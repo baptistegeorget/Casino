@@ -25,6 +25,8 @@ public class CasinoController {
 
     private final LaunchApi launchApi;
 
+    private final CreditApi creditApi;
+
     @GetMapping("/dicestartermng")
     public String diceStartManagement(HttpSession httpSession) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -58,21 +60,40 @@ public class CasinoController {
     }
 
     @PostMapping("/addcredits")
-    public String creditsManagement(@ModelAttribute Credits credits, Model model) {
+    public String creditsManagement(@ModelAttribute Credits credits, HttpSession httpSession) {
         // call backend to retrieve next step to take
-        model.addAttribute("amount", credits.getAmount());
+        String target;
+        int amount = credits.getAmount();
+        String pseudo = String.valueOf(httpSession.getAttribute("pseudo"));
+        try {
+            CreditsInputDto newCredits = new CreditsInputDto(pseudo, amount);
+            CreditsOutputDto creditsOutputDto = this.creditApi.payToWin(newCredits);
+            target = "redirect:/dicestartermng";
+        } catch (FeignException.FeignClientException e) {
+            log.error("Error add credits for {} !", pseudo, e);
+            target = "redirect:/pay";
+        }
         return "redirect:/";
     }
 
     @GetMapping("/login")
     public String connexion() {
-        return "Connection";
+        return "connection";
+    }
+
+    @GetMapping("/register")
+    public String registration(Model model) {
+        GamblerInputDto newGambler = new GamblerInputDto();
+        model.addAttribute("gambler", newGambler);
+        return "register";
     }
 
     @GetMapping("/pay")
     public String pay(Model model, HttpSession httpSession) {
         String name = String.valueOf(httpSession.getAttribute("pseudo"));
         model.addAttribute("pseudo", name);
+        Credits credits = new Credits();
+        model.addAttribute("credits", credits);
         return "pay";
     }
 
