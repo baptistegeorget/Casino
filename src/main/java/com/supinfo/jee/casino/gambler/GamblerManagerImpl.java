@@ -2,6 +2,7 @@ package com.supinfo.jee.casino.gambler;
 
 import com.supinfo.jee.casino.launches.WrongBetException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -9,9 +10,30 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class GamblerManagerImpl implements GamblerManager {
 
     private final GamblerRepository gamblerRepository;
+
+    @Override
+    public Gambler createGambler(String pseudo, String password) {
+        final Gambler gambler;
+        if (StringUtils.hasText(pseudo)) {
+            if (StringUtils.hasText(password)) {
+                if (this.retrieveGambler(pseudo).isEmpty()) {
+                    gambler = gamblerRepository.save(new Gambler(pseudo, password, 0, 25));
+                    gamblerRepository.findAll().forEach(parieur -> log.info("Created gambler = {}.", parieur));
+                } else {
+                    throw new ExistingGamblerException();
+                }
+            } else {
+                throw new EmptyPasswordException();
+            }
+        } else {
+            throw new EmptyPseudoException();
+        }
+        return gambler;
+    }
 
     @Override
     public Gambler getGambler(String pseudo) {
@@ -78,11 +100,19 @@ public class GamblerManagerImpl implements GamblerManager {
             throw new WrongBetException();
         }
         Gambler gambler = this.retrieveGambler(pseudo).orElseThrow(EmptyPseudoException::new);
-        long newBalance = gambler.getBalance() - (long) bet * numberOfLaunch;
-        gambler.setBalance(newBalance);
+        System.out.println("Start bet ("+ numberOfLaunch +"):");
+
+        gambler.setBalance(gambler.getBalance() - (long) bet * numberOfLaunch);
+        for (int i = 0; i < numberOfLaunch; i++) {
+            int number = (int) (Math.random() * 100);
+            System.out.println(number);
+            if (number <= initialValue) {
+                gambler.setBalance(gambler.getBalance() + (long) bet * 100 / initialValue);
+            }
+        }
         gambler = this.gamblerRepository.save(gambler);
-        if (newBalance < 1) {
-            throw new WrongBalanceException(newBalance, pseudo);
+        if (gambler.getBalance() < 1) {
+            throw new WrongBalanceException(gambler.getBalance(), pseudo);
         }
         return gambler;
     }

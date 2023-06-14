@@ -9,5 +9,7 @@ public interface GamblerManager {
     Gambler playGame(String pseudo, int initialValue, int bet, int numberOfLaunch);
 
     void authenticateGambler(String pseudo, String password);
+
+    public Gambler createGambler(String pseudo, String password);
 }
 
