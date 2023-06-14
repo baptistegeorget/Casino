@@ -22,6 +22,7 @@ import java.util.Objects;
 public class CasinoController {
 
     private final GameApi gameApi;
+
     private final LaunchApi launchApi;
 
     @GetMapping("/dicestartermng")
@@ -30,7 +31,6 @@ public class CasinoController {
         String pseudo = String.valueOf(authentication.getPrincipal());
         log.info("try to start game for {}.", pseudo);
         httpSession.setAttribute("pseudo", pseudo);
-
         GameInputDto newGame = new GameInputDto(pseudo, null);
         String target;
         try {
@@ -64,7 +64,6 @@ public class CasinoController {
         return "redirect:/";
     }
 
-
     @GetMapping("/login")
     public String connexion() {
         return "Connection";
@@ -87,7 +86,6 @@ public class CasinoController {
         diceThrow.setBetAmount(Objects.requireNonNullElse(bet, 1));
         Long balance = (Long) httpSession.getAttribute("balance");
         model.addAttribute("balance", Objects.requireNonNullElse(balance, 0));
-
         return "dice-roll";
     }
 
@@ -110,6 +108,4 @@ public class CasinoController {
         }
         return target;
     }
-
-
 }

@@ -31,7 +31,6 @@ public class WebSecurityConfig {
                         .password(passwordEncoder.encode("password"))
                         .roles("GUEST")
                         .build();
-
         return new InMemoryUserDetailsManager(user);
     }
 
