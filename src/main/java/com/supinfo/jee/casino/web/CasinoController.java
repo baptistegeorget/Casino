@@ -81,13 +81,6 @@ public class CasinoController {
         return "connection";
     }
 
-    @GetMapping("/register")
-    public String registration(Model model) {
-        GamblerInputDto newGambler = new GamblerInputDto();
-        model.addAttribute("gambler", newGambler);
-        return "register";
-    }
-
     @GetMapping("/pay")
     public String pay(Model model, HttpSession httpSession) {
         String name = String.valueOf(httpSession.getAttribute("pseudo"));
