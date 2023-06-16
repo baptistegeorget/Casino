@@ -1,7 +1,6 @@
 package com.supinfo.jee.casino.game;
 
 import com.supinfo.jee.casino.gambler.Gambler;
-import com.supinfo.jee.casino.gambler.GamblerInputDto;
 import com.supinfo.jee.casino.gambler.GamblerManager;
 import com.supinfo.jee.casino.launches.LaunchController;
 import com.supinfo.jee.casino.launches.LaunchInputDto;
@@ -40,12 +39,5 @@ public class GameController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     void authenticate(@RequestBody GameInputDto newGame) {
         this.gamblerManager.authenticateGambler(newGame.getPseudo(), newGame.getPassword());
-    }
-
-    @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void register(@RequestBody GamblerInputDto newGambler) {
-        System.out.println("test");
-        this.gamblerManager.createGambler(newGambler.pseudo(), newGambler.password());
     }
 }

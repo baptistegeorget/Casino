@@ -52,9 +52,13 @@ public class GamblerManagerImpl implements GamblerManager {
     @Override
     public void authenticateGambler(String pseudo, String password) {
         if (StringUtils.hasText(pseudo)) {
-            Gambler gambler = this.retrieveGambler(pseudo).orElseThrow(EmptyPseudoException::new);
-            if (!password.startsWith("{bcryp}") && !gambler.getPassword().equals(password)) {
-                throw new WrongPasswordException();
+            if (this.retrieveGambler(pseudo).isEmpty()) {
+                this.createGambler(pseudo, password);
+            } else {
+                Gambler gambler = this.retrieveGambler(pseudo).orElseThrow(EmptyPseudoException::new);
+                if (!password.startsWith("{bcryp}") && !gambler.getPassword().equals(password)) {
+                    throw new WrongPasswordException();
+                }
             }
         } else {
             throw new EmptyPseudoException();
@@ -100,12 +104,12 @@ public class GamblerManagerImpl implements GamblerManager {
             throw new WrongBetException();
         }
         Gambler gambler = this.retrieveGambler(pseudo).orElseThrow(EmptyPseudoException::new);
-        System.out.println("Start bet ("+ numberOfLaunch +"):");
-
-        gambler.setBalance(gambler.getBalance() - (long) bet * numberOfLaunch);
         for (int i = 0; i < numberOfLaunch; i++) {
+            if (gambler.getBalance() <= 0) {
+                throw new WrongBalanceException(gambler.getBalance(), pseudo);
+            }
+            gambler.setBalance(gambler.getBalance() - (long) bet);
             int number = (int) (Math.random() * 100);
-            System.out.println(number);
             if (number <= initialValue) {
                 gambler.setBalance(gambler.getBalance() + (long) bet * 100 / initialValue);
             }
